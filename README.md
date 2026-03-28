@@ -1,28 +1,93 @@
-#Internship Assignment
-This project is a web-based application developed as part of an internship assignment. It demonstrates core web development skills, including UI/UX design, responsive layouts, and interactive components.
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-#Live Demo
-You can view the live project here:
+gsap.registerPlugin(ScrollTrigger);
 
-https://bala-murali-krishna-5115.github.io/internship-assignment/
+export default function App() {
+  const heroRef = useRef(null);
 
-🛠️ Tech Stack
-Frontend: HTML5, CSS3, JavaScript (ES6+)
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".headline span", {
+        y: 50,
+        opacity: 0,
+        stagger: 0.05,
+        duration: 0.8,
+        ease: "power2.out",
+      });
 
-Deployment: GitHub Pages
+      gsap.from(".stat", {
+        y: 20,
+        opacity: 0,
+        stagger: 0.2,
+        delay: 0.5,
+      });
 
-Special Mentions: Deployed with assistance from Google Anti-Gravity.
+      gsap.fromTo(
+        ".car",
+        {
+          x: -300
+        },
+        {
+          x: window.innerWidth,
+          scale: 1.05,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top top",
+            end: "+=1000",
+            scrub: 1,
+            pin: true
+          },
+        }
+      );
+    }, heroRef);
 
-#Key Features
-Responsive Design: Optimized for mobile, tablet, and desktop screens.
+    return () => ctx.revert();
+  }, []);
 
-Interactive UI: Smooth transitions and user-friendly elements.
+  const text = "WELCOME ITZ FIZZ";
 
-Cross-Browser Compatibility: Tested across modern web browsers for consistent performance.
+  return (
+    <div className="bg-black text-white min-h-[200vh]">
+      <section
+        ref={heroRef}
+        className="h-screen flex flex-col items-center justify-center relative overflow-hidden"
+      >
+        <h1 className="headline text-4xl md:text-6xl tracking-[0.5em] mb-8">
+          {text.split("").map((char, index) => (
+            <span key={index} className="inline-block">
+              {char}
+            </span>
+          ))}
+        </h1>
 
-Clean Code: Structured and commented code for better maintainability.
+        <div className="flex gap-8 text-center">
+          <div className="stat">
+            <h2 className="text-2xl font-bold">120%</h2>
+            <p>Growth</p>
+          </div>
+          <div className="stat">
+            <h2 className="text-2xl font-bold">80%</h2>
+            <p>Users</p>
+          </div>
+          <div className="stat">
+            <h2 className="text-2xl font-bold">95%</h2>
+            <p>Satisfaction</p>
+          </div>
+        </div>
 
-#Acknowledgments
-Thanks to the internship program for the learning opportunity.
+        <img
+          src="https://images.unsplash.com/photo-1503376780353-7e6692767b70"
+          alt="car"
+          className="car absolute bottom-10 left-0 w-64 md:w-96"
+        />
+      </section>
 
-Gratitude to Google Anti-Gravity for helping overcome deployment challenges.
+      <section className="h-screen flex items-center justify-center">
+        <h2 className="text-3xl">Scroll to see animation</h2>
+      </section>
+    </div>
+  );
+}
